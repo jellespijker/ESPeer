@@ -1,12 +1,3 @@
-// This example uses an Adafruit Huzzah ESP8266
-// to connect to shiftr.io.
-//
-// You can check on your device after a successful
-// connection here: https://shiftr.io/try.
-//
-// by Joël Gähwiler
-// https://github.com/256dpi/arduino-mqtt
-
 #include <Wire.h>
 #include <SPI.h>
 
