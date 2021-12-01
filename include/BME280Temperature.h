@@ -12,21 +12,16 @@
 class BME280Temperature : public ESPSensor {
 
 public:
-    explicit BME280Temperature(Adafruit_BME280* bme);
+    explicit BME280Temperature(std::string topic, int delay, Adafruit_BME280 *bme);
 
-    ~BME280Temperature() = default;
+    ~BME280Temperature();
 
     void init() override;
 
-    void task() override;
-
-    [[nodiscard]] float getValue() const override;
+    [[maybe_unused]] bool task() override;
 
 private:
-    Adafruit_BME280* m_bme;
-    float m_value{};
-    int m_delay{};
-    unsigned long m_last_update{};
+    Adafruit_BME280 *m_bme;
 };
 
 #endif //ESPEER_BME280TEMPERATURE_H

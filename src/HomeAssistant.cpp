@@ -4,22 +4,20 @@
 
 #include <HardwareSerial.h>
 
+#include <utility>
+
 #include "Debug.h"
 #include "HomeAssistant.h"
-#include "Credentials.h"
 
+HomeAssistant::HomeAssistant(std::string mqtt_id) : m_mqtt_id(std::move(mqtt_id)) {}
 
-HomeAssistant::HomeAssistant() {
-
-}
-
-void HomeAssistant::connect() {
+void HomeAssistant::connect(const std::string &ssid, const std::string &password, const std::string &server, int port,
+                            const std::string &user, const std::string &mqtt_password) {
 #ifdef DEBUG
     Serial.println("\n\nTrying to establish connections.");
 #endif
     if (!WiFi.isConnected()) {
-        Serial.println("Trying to connect to WiFi: " + String(ssid) + " using password: " + password);
-        WiFi.begin(ssid, password);
+        WiFi.begin(ssid.data(), password.data());
         while (!WiFi.isConnected()) {
             digitalWrite(LED_BUILTIN, HIGH);
             delay(100);
@@ -35,15 +33,21 @@ void HomeAssistant::connect() {
     }
     if (!m_client.connected()) {
 #ifdef DEBUG
-      Serial.println("Trying to connect to MQTT server: " + String(mqtt_server) + " using port: " + String(mqtt_port));
+        Serial.print("Trying to connect to MQTT server: ");
+        Serial.print(server.data());
+        Serial.print(" using port: ");
+        Serial.println(std::to_string(port).data());
 #endif
-        m_client.begin(mqtt_server, mqtt_port, m_net);
+        m_client.begin(server.data(), port, m_net);
 #ifdef DEBUG
-        Serial.println("Using ID: " + String(mqtt_id));
-        Serial.println("Using user: " + String(mqtt_user));
-        Serial.println("Using password: " + String(mqtt_password));
+        Serial.print("Using ID: ");
+        Serial.println(m_mqtt_id.data());
+        Serial.print("Using user: ");
+        Serial.println(user.data());
+        Serial.print("Using password: ");
+        Serial.println(mqtt_password.data());
 #endif
-        while (!m_client.connect(mqtt_id, mqtt_user, mqtt_password)) {
+        while (!m_client.connect(m_mqtt_id.data(), user.data(), mqtt_password.data())) {
             digitalWrite(LED_BUILTIN, HIGH);
             delay(50);
             digitalWrite(LED_BUILTIN, LOW);
@@ -60,8 +64,11 @@ void HomeAssistant::connect() {
 }
 
 void HomeAssistant::task() {
-    for (auto sensor : m_sensors) {
-        sensor->task();
+    for (auto sensor: m_sensors) {
+        if (sensor->task()) {
+            auto topic = m_mqtt_id + sensor->getTopic();
+            m_client.publish(topic.data(), std::to_string(sensor->getValue()).data());
+        }
     }
 }
 

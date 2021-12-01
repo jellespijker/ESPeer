@@ -12,12 +12,12 @@
 
 #include "ESPSensor.h"
 
-class HomeAssistant
-{
+class HomeAssistant {
 public:
-    HomeAssistant();
+    explicit HomeAssistant(std::string mqtt_id);
 
-    void connect();
+    void connect(const std::string &ssid, const std::string &password, const std::string &server, int port,
+                 const std::string &user, const std::string &mqtt_password);
 
     void task();
 
@@ -25,13 +25,14 @@ public:
 
     static String getLocalIP();
 
-    void addSensor(ESPSensor* sensor);
+    void addSensor(ESPSensor *sensor);
 
 private:
     WiFiClient m_net;
     MQTTClient m_client;
 
-    std::vector<ESPSensor*> m_sensors;
+    std::vector<ESPSensor *> m_sensors;
+    std::string m_mqtt_id;
 };
 
 #endif //ESPEER_HOMEASSISTANT_H

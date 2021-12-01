@@ -12,21 +12,16 @@
 
 class DHT22Temperature : public ESPSensor {
 public:
-    explicit DHT22Temperature(DHT* dht);
+    explicit DHT22Temperature(std::string topic, int delay, DHT *dht);
 
-    ~DHT22Temperature() = default;
+    ~DHT22Temperature();
 
     void init() override;
 
-    void task() override;
-
-    [[nodiscard]] float getValue() const override;
+    [[maybe_unused]] bool task() override;
 
 private:
-    DHT* m_dht;
-    float m_value{};
-    int m_delay{};
-    unsigned long m_last_update{};
+    DHT *m_dht;
 };
 
 #endif //ESPEER_DHT22TEMPERATURE_H

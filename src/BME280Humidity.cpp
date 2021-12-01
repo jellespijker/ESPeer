@@ -5,26 +5,27 @@
 #include "BME280Humidity.h"
 #include "Debug.h"
 
-BME280Humidity::BME280Humidity(Adafruit_BME280* bme) {
-m_bme = bme;
-m_delay = 2000;
-m_last_update = millis();
+BME280Humidity::BME280Humidity(std::string topic, const int delay, Adafruit_BME280 *bme) :
+        ESPSensor(std::move(topic), delay),
+        m_bme(bme) {}
+
+BME280Humidity::~BME280Humidity() {
+    delete m_bme;
 }
 
-void BME280Humidity::init() {
+void BME280Humidity::init() {}
 
-}
-
-void BME280Humidity::task() {
+bool BME280Humidity::task() {
     if (millis() >= m_last_update + m_delay) {
         m_last_update = millis();
-        m_value = m_bme->readHumidity();
+        auto value = m_bme->readHumidity();
+        if (m_value != value) {
+            m_value = value;
+            return true;
+        }
 #ifdef DEBUG
         Serial.println("Obtain humidity from BME280: " + String(m_value));
 #endif
     }
-}
-
-float BME280Humidity::getValue() const {
-    return m_value;
+    return false;
 }

@@ -12,21 +12,16 @@
 class BME280Humidity : public ESPSensor {
 
 public:
-    explicit BME280Humidity(Adafruit_BME280* bme);
+    explicit BME280Humidity(std::string topic, int delay, Adafruit_BME280 *bme);
 
-    ~BME280Humidity() = default;
+    ~BME280Humidity();
 
     void init() override;
 
-    void task() override;
-
-    [[nodiscard]] float getValue() const override;
+    [[maybe_unused]] bool task() override;
 
 private:
-    Adafruit_BME280* m_bme;
-    float m_value{};
-    int m_delay{};
-    unsigned long m_last_update{};
+    Adafruit_BME280 *m_bme;
 };
 
 #endif //ESPEER_BME280HUMIDITY_H

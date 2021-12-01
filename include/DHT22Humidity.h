@@ -11,21 +11,16 @@
 
 class DHT22Humidity : public ESPSensor {
 public:
-    explicit DHT22Humidity(DHT* dht);
+    explicit DHT22Humidity(std::string topic, int delay, DHT *dht);
 
-    ~DHT22Humidity() = default;
+    ~DHT22Humidity();
 
     void init() override;
 
-    void task() override;
-
-    [[nodiscard]] float getValue() const override;
+    [[maybe_unused]] bool task() override;
 
 private:
-    DHT* m_dht;
-    float m_value{};
-    int m_delay{};
-    unsigned long m_last_update{};
+    DHT *m_dht;
 };
 
 #endif //ESPEER_DHT22HUMIDITY_H
