@@ -40,8 +40,8 @@ void setup() {
 
     // Setup the DHT22Sensor sensor
     dht.begin();
-    ha.addSensor(new DHT22Temperature{"/climate/temperature/0", 2000, &dht});
-    ha.addSensor(new DHT22Humidity{"/climate/humidity/0", 2000, &dht});
+    ha.addSensor(new DHT22Temperature{"/climate/temperature/1", 2000, &dht});
+    ha.addSensor(new DHT22Humidity{"/climate/humidity/1", 2000, &dht});
 }
 
 void loop() {
