@@ -18,7 +18,7 @@ void BME280Pressure::init() {}
 bool BME280Pressure::task() {
     if (millis() >= m_last_update + m_delay) {
         m_last_update = millis();
-        auto value = m_bme->readPressure();
+        auto value = m_bme->readPressure() / 100;
         if (m_value != value) {
             m_value = value;
             return true;
