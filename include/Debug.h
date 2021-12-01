@@ -5,7 +5,7 @@
 #ifndef ESPEER_DEBUG_H
 #define ESPEER_DEBUG_H
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #include <HardwareSerial.h>
